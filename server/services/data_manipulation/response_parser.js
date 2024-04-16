@@ -1,4 +1,4 @@
-import Parsed from "./models/parsed.js"
+import Parsed from "../models/parsed.js"
 
 export const parseAnswer = (data) => {
     data = data.replace(/^[\n\r]+|;+$/g, '');
@@ -10,7 +10,6 @@ export const parseAnswer = (data) => {
         const value = part[1].trim();
         parsed[key] = value;
     }
-    console.log(data)
     return new Parsed(parsed);
 }
 

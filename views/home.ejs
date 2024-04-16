@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+        .card {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px;
+            width: 200px;
+            display: inline-block;
+        }
+
+        .card h2 {
+            margin-top: 0;
+        }
+
+        div {
+            display: inline-block;
+            padding-top: 10px;
+            text-align: center;
+            width: 100%;
+        }
+
+        a {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: black;
+            color: white;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        a:hover {
+            background-color: #555;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #form-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+        #submit-btn:hover {
+            background-color: #0056b3;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #create-new-office-worker {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <h1>Welcome <%= username%>
+        </h1>
+        <!-- <button id="create-office-worker">Create a new office worker</button>
+        <div id="create-new-office-worker">
+            <h2>Create a new office worker</h2>
+            <div id="form-container">
+                <form action="" method="post">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="surname">Surname</label>
+                        <input type="text" id="surname" name="surname" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <button type="submit" id="submit-btn">Submit</button>
+                </form>
+            </div>
+        </div> -->
+        <div id="see-all-office-workers">
+            <h1>Get office workers - DEMO</h1>
+            <div id="office-workers-holder">
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+<script>
+    var interval = setInterval(() => {
+        requestOfficeUsers()
+    }, 10000)
+
+    function requestOfficeUsers() {
+        // URL of the API endpoint
+        const apiUrl = 'http://localhost:8081/api/getoffice_users';
+        // Configuration for the fetch request
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        };
+
+        // Send the fetch request
+        fetch(apiUrl, requestOptions)
+            .then(response => response.json()) // Parse response as JSON
+            .then(data => {
+                // Handle the response data
+                displayAnswer(data)
+            })
+            .catch(error => {
+                // Handle errors
+                console.error('Error:', error);
+            });
+    }
+
+    function getCookie(cname) {
+        let name = cname + "=";
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let ca = decodedCookie.split(';');
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+
+    function displayAnswer(answer) {
+        const cardsContainer = document.getElementById('office-workers-holder');
+        cardsContainer.innerHTML = ""
+        createCards(answer)
+    }
+
+
+    function createCards(data) {
+        const cardsContainer = document.getElementById('office-workers-holder');
+
+        // Loop through the data array
+        data.forEach(item => {
+            // Create a div element for the card
+            const card = document.createElement('div');
+            card.classList.add('card');
+
+            // Create h2 element for name
+            const nameElement = document.createElement('h2');
+            nameElement.textContent = `Name: ${item.name}`;
+
+            // Create p elements for surname and password
+            const surnameElement = document.createElement('p');
+            surnameElement.textContent = `Surname: ${item.surename}`;
+
+            const passwordElement = document.createElement('p');
+            passwordElement.textContent = `Password: ${item.password}`;
+
+            // Append elements to the card
+            card.appendChild(nameElement);
+            card.appendChild(surnameElement);
+            card.appendChild(passwordElement);
+
+            // Append the card to the cards container
+            cardsContainer.appendChild(card);
+        });
+    }
+</script>
